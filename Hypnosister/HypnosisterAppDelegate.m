@@ -7,13 +7,54 @@
 //
 
 #import "HypnosisterAppDelegate.h"
+#import "HypnosisView.h"
+
 
 @implementation HypnosisterAppDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return view;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES
+                                            withAnimation:UIStatusBarAnimationFade];
     // Override point for customization after application launch.
+    
+    CGRect screenRect = [[self window] bounds];
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:screenRect];
+    [scrollView setMinimumZoomScale:1.0];
+    [scrollView setMaximumZoomScale:5.0];
+    [scrollView setDelegate:self];
+    
+    [[self window] addSubview:scrollView];
+    
+    CGRect bigRect = screenRect;
+    view = [[HypnosisView alloc] initWithFrame:screenRect];
+    
+    [scrollView addSubview:view];
+    
+    [scrollView setContentSize:bigRect.size];
+    
+    
+    BOOL success = [view becomeFirstResponder];
+    if (success) {
+        NSLog(@"HypnosisView became the first responder");
+    } else {
+        NSLog(@"Could not become first responder");
+    }
+    
+    /**
+    CGRect anotherFrame = CGRectMake(20, 30, 50, 50);
+    
+    HypnosisView *anotherView = [[HypnosisView alloc] initWithFrame:anotherFrame];
+    //[anotherView setBackgroundColor:[UIColor blueColor]];
+    
+    [view addSubview:anotherView];
+    */
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
